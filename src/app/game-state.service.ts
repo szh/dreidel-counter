@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { DreidelLetter, GameState, Player } from './game-state';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameStateService {
-  private state: GameState = { players: [], nextTurn: null, potCount: 0 };
+  public GameOver$: EventEmitter<string> = new EventEmitter<string>();
+  public PlayerEliminated$: EventEmitter<string> = new EventEmitter<string>();
+  private state: GameState = { players: [], nextTurn: null, potCount: 5 };
 
   constructor() {
     this.restoreState();
@@ -23,7 +25,7 @@ export class GameStateService {
 
     // Get the current max turn number
     const maxTurnOrder: number = Math.max(0, ...this.state.players.map(p => p.turnOrder));
-    this.state.players.push({ name, score: 0, turnOrder: maxTurnOrder + 1 });
+    this.state.players.push({ name, score: 4, turnOrder: maxTurnOrder + 1 });
     if (!this.state.nextTurn) {
       this.state.nextTurn = name;
     }
@@ -46,6 +48,10 @@ export class GameStateService {
   }
 
   public playTurn(action: DreidelLetter): void {
+    if (this.state.winner) {
+      return;
+    }
+
     const playerName: string = this.getCurrentTurn();
     const prevScore: number = this.getScore(playerName);
     switch (action) {
@@ -73,8 +79,13 @@ export class GameStateService {
         }
         break;
     }
-    this.checkIfPotEmpty();
-    this.endTurn();
+    if (!this.state.winner) {
+      this.checkIfPotEmpty();
+    }
+    if (!this.state.winner) {
+      this.nextTurn();
+    }
+    this.saveState();
   }
 
   private checkIfPotEmpty(): void {
@@ -88,13 +99,19 @@ export class GameStateService {
     }
   }
 
-  private endTurn(): void {
+  private nextTurn(): void {
     const currentPlayer: Player = this.state.players.find(p => p.name === this.state.nextTurn);
     const currentTurnNum: number = currentPlayer ? currentPlayer.turnOrder : 0;
-    //TODO: Find next number up, otherwise start from 0
-    this.state.nextTurn = this.state.players.find(p => p.turnOrder === currentTurnNum + 1).name;
-
-    this.saveState();
+    // Find next player up.
+    // Step 1: sort players by turn number, excluding the current player
+    const playersSorted: Player[] =
+      this.state.players
+        .filter(p => p.turnOrder !== currentTurnNum)
+        .sort((a, b) => a.turnOrder - b.turnOrder);
+    // Step 2: Get the first player with a turn number greater than the current one.
+    // If that doesn't exist, go back to the beginning and take the first player
+    const nextUp: Player = playersSorted.find(p => p.turnOrder > currentTurnNum) || playersSorted[0];
+    this.state.nextTurn = nextUp.name;
   }
 
   private didPlayerLose(playerName: string): boolean {
@@ -102,6 +119,16 @@ export class GameStateService {
       // Player has no more points to lose. Delete from list
       const playerIndex: number = this.state.players.findIndex(p => p.name === playerName);
       this.state.players.splice(playerIndex, 1);
+
+      this.PlayerEliminated$.emit(playerName);
+
+      // If only one player remains, they win the game
+      if (this.state.players.length === 1) {
+        this.state.winner = this.state.players[0].name;
+        this.state.nextTurn = null;
+        this.GameOver$.emit(this.state.winner);
+      }
+
       return true;
     }
 
@@ -109,9 +136,7 @@ export class GameStateService {
   }
 
   public clearGame(): void {
-    this.state.players = [];
-    this.state.potCount = 0;
-    this.state.nextTurn = null;
+    this.state = { players: [], nextTurn: null, potCount: 5 };
   }
 
   private saveState(): void {

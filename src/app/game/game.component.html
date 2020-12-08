@@ -16,18 +16,45 @@
       </form>
     </mat-card-content>
     <mat-card-actions>
-      <button class="doneBtn" [disabled]="addedPlayersCount<2" mat-button color="primary" type="button"
+      <button [disabled]="addedPlayersCount<2" mat-button color="primary" type="button"
         (click)="submitPlayers()">Done</button>
     </mat-card-actions>
   </mat-card>
 
+  <ng-container *ngIf="!selectingPlayers">
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Pot</mat-card-title>
+        <mat-card-subtitle>{{potCount}}</mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card *ngFor="let pName of playerNames">
+      <mat-card-header>
+        <mat-card-title>{{pName}}</mat-card-title>
+        <mat-card-subtitle>{{getScore(pName)}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="currentTurn === pName">
+          Your turn!
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <p *ngIf="currentTurn === pName" class="letterBtns">
+          <button mat-button type="button" (click)="playTurn('nun')">נ</button>
+          <button mat-button type="button" (click)="playTurn('gimmel')">ג</button>
+          <button mat-button type="button" (click)="playTurn('hay')">ה</button>
+          <button mat-button type="button" (click)="playTurn('shin')">ש</button>
+        </p>
+      </mat-card-actions>
+    </mat-card>
+
+  </ng-container>
+
 
   <br />
-  <br />
 
-  <mat-card>
-    <pre>{{state | json}}</pre>
-  </mat-card>
-
+  <button mat-raised-button color="warn" type="button" (click)="reset()">Reset Game</button>
 
 </div>

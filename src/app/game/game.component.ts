@@ -11,19 +11,31 @@ export class GameComponent implements OnInit {
   selectingPlayers: boolean;
   addedPlayersCount: number = 0;
   newPlayerName: string;
+  playerNames: string[];
+  currentTurn: string;
+  potCount: number;
+  isGameOver: boolean;
 
-  constructor(public state: GameStateService) { }
+  constructor(private state: GameStateService) { }
 
   ngOnInit(): void {
     this.loadState();
   }
 
   loadState(): void {
-    if (!this.state.getPlayerNames().length) {
+    if (this.state.getPlayerNames().length === 0) {
       this.selectingPlayers = true;
+      this.playerNames = null;
     } else {
       this.selectingPlayers = false;
+      this.playerNames = this.state.getPlayerNames();
+      this.currentTurn = this.state.getCurrentTurn();
+      this.potCount = this.state.getPotCount();
     }
+  }
+
+  getScore(playerName: string): number {
+    return this.state.getScore(playerName);
   }
 
   addPlayer(): void {
@@ -33,7 +45,12 @@ export class GameComponent implements OnInit {
   }
 
   submitPlayers(): void {
-    this.selectingPlayers = false;
+    this.loadState();
+  }
+
+  reset(): void {
+    this.state.clearGame();
+    this.loadState();
   }
 
   playTurn(action: DreidelLetter): void {

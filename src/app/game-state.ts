@@ -2,6 +2,7 @@ export interface GameState {
   potCount: number;
   players: Player[];
   nextTurn: string;
+  winner?: string;
 }
 
 export interface Player {
