@@ -1,0 +1,33 @@
+<div class="outer-container">
+
+  <mat-card class="form-card" *ngIf="selectingPlayers">
+    <mat-card-header>
+      <mat-card-title>Add players</mat-card-title>
+      <mat-card-subtitle>You need at least 2 players to play</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="addPlayer()">
+        <p>
+          <mat-form-field class="form-field" appearance="standard">
+            <mat-label>Enter a player name</mat-label>
+            <input [(ngModel)]="newPlayerName" name="name" matInput placeholder="Player name" />
+          </mat-form-field>
+        </p>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <button class="doneBtn" [disabled]="addedPlayersCount<2" mat-button color="primary" type="button"
+        (click)="submitPlayers()">Done</button>
+    </mat-card-actions>
+  </mat-card>
+
+
+  <br />
+  <br />
+
+  <mat-card>
+    <pre>{{state | json}}</pre>
+  </mat-card>
+
+
+</div>
