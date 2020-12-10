@@ -50,10 +50,10 @@
       </mat-card-content>
       <mat-card-actions>
         <p *ngIf="currentTurn === pName">
-          <button mat-raised-button color="primary" type="button" (click)="playTurn('nun')">נ</button>
-          <button mat-raised-button color="primary" type="button" (click)="playTurn('gimmel')">ג</button>
-          <button mat-raised-button color="primary" type="button" (click)="playTurn('hay')">ה</button>
           <button mat-raised-button color="primary" type="button" (click)="playTurn('shin')">ש</button>
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('hay')">ה</button>
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('gimmel')">ג</button>
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('nun')">נ</button>
           <button mat-raised-button color="primary" type="button" (click)="spin()">Spin for me</button>
         </p>
       </mat-card-actions>
