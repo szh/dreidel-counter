@@ -9,3 +9,6 @@ Allows undoing of previous turn.
 Enjoy!
 
 © 2020 Shlomo Zalman Heigh, MIT License
+
+<h2>How to use</h3>
+Clone the repo, run `npm install` and `ng serve`. Browse to `localhost:4200`.
