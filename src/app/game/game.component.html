@@ -1,6 +1,6 @@
-<div class="outer-container">
+<div class="container">
 
-  <mat-card class="form-card" *ngIf="selectingPlayers">
+  <mat-card *ngIf="selectingPlayers">
     <mat-card-header>
       <mat-card-title>Add players</mat-card-title>
       <mat-card-subtitle>You need at least 2 players to play</mat-card-subtitle>
@@ -13,44 +13,46 @@
             <input [(ngModel)]="newPlayerName" name="name" matInput placeholder="Player name" />
           </mat-form-field>
         </p>
+        <p>
+          Added {{addedPlayersCount}} players.
+        </p>
       </form>
     </mat-card-content>
     <mat-card-actions>
-      <button [disabled]="addedPlayersCount<2" mat-button color="primary" type="button"
+      <button [disabled]="addedPlayersCount<2" mat-raised-button color="primary" type="button"
         (click)="submitPlayers()">Done</button>
     </mat-card-actions>
   </mat-card>
 
-  <ng-container *ngIf="!selectingPlayers">
+  <div class="cardDeck" *ngIf="!selectingPlayers">
 
     <mat-card>
       <mat-card-header>
         <mat-card-title>Pot</mat-card-title>
-        <mat-card-subtitle>{{potCount}}</mat-card-subtitle>
+        <mat-card-subtitle>{{potCount}} Points</mat-card-subtitle>
       </mat-card-header>
     </mat-card>
 
     <mat-card *ngFor="let pName of playerNames">
       <mat-card-header>
         <mat-card-title>{{pName}}</mat-card-title>
-        <mat-card-subtitle>{{getScore(pName)}}</mat-card-subtitle>
+        <mat-card-subtitle>{{getScore(pName)}} Points</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <p *ngIf="currentTurn === pName">
-          Your turn!
-        </p>
+        <em *ngIf="currentTurn === pName">Your turn!</em>
       </mat-card-content>
       <mat-card-actions>
-        <p *ngIf="currentTurn === pName" class="letterBtns">
-          <button mat-button type="button" (click)="playTurn('nun')">נ</button>
-          <button mat-button type="button" (click)="playTurn('gimmel')">ג</button>
-          <button mat-button type="button" (click)="playTurn('hay')">ה</button>
-          <button mat-button type="button" (click)="playTurn('shin')">ש</button>
+        <p *ngIf="currentTurn === pName">
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('nun')">נ</button>
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('gimmel')">ג</button>
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('hay')">ה</button>
+          <button mat-raised-button color="primary" type="button" (click)="playTurn('shin')">ש</button>
+          <button mat-raised-button color="primary" type="button" (click)="spin()">Spin for me</button>
         </p>
       </mat-card-actions>
     </mat-card>
 
-  </ng-container>
+  </div>
 
 
   <br />

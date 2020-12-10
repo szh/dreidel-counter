@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DreidelLetter } from '../game-state';
 import { GameStateService } from '../game-state.service';
 
@@ -16,16 +17,24 @@ export class GameComponent implements OnInit {
   potCount: number;
   isGameOver: boolean;
 
-  constructor(private state: GameStateService) { }
+  constructor(private state: GameStateService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.loadState();
+    this.state.Action$.subscribe((msg: string) => {
+      this.snackBar.open(msg, 'Undo')
+        .onAction().subscribe(() => {
+          this.state.undoLastTurn();
+          this.loadState();
+        });
+    });
   }
 
   loadState(): void {
     if (this.state.getPlayerNames().length === 0) {
       this.selectingPlayers = true;
       this.playerNames = null;
+      this.addedPlayersCount = 0;
     } else {
       this.selectingPlayers = false;
       this.playerNames = this.state.getPlayerNames();
@@ -56,5 +65,25 @@ export class GameComponent implements OnInit {
   playTurn(action: DreidelLetter): void {
     this.state.playTurn(action);
     this.loadState();
+  }
+
+  spin(): void {
+    const rand: number = Math.floor(Math.random() * 4);
+    let letter: DreidelLetter;
+    switch (rand) {
+      case 0:
+        letter = 'nun';
+        break;
+      case 1:
+        letter = 'gimmel';
+        break;
+      case 2:
+        letter = 'hay';
+        break;
+      case 3:
+        letter = 'shin';
+        break;
+    }
+    this.playTurn(letter);
   }
 }

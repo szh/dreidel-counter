@@ -5,12 +5,17 @@ import { DreidelLetter, GameState, Player } from './game-state';
   providedIn: 'root'
 })
 export class GameStateService {
-  public GameOver$: EventEmitter<string> = new EventEmitter<string>();
-  public PlayerEliminated$: EventEmitter<string> = new EventEmitter<string>();
+  public Action$: EventEmitter<string> = new EventEmitter<string>();
   private state: GameState = { players: [], nextTurn: null, potCount: 5 };
+  private prevState: GameState;
+  private turnMessages: string[] = [];
 
   constructor() {
-    this.restoreState();
+    // Check if the state is stored in localstorage
+    const storedState: string = localStorage.getItem('game-state');
+    if (storedState) {
+      this.state = JSON.parse(storedState);
+    }
   }
 
   public getPlayerNames(): string[] {
@@ -19,7 +24,7 @@ export class GameStateService {
 
   public addPlayer(name: string): void {
     // Check if the player name already exists
-    if (this.state.players.find(p => p.name === name)) {
+    if (!name || this.state.players.find(p => p.name === name)) {
       return;
     }
 
@@ -29,6 +34,7 @@ export class GameStateService {
     if (!this.state.nextTurn) {
       this.state.nextTurn = name;
     }
+    this.endOfAction();
   }
 
   public getPotCount(): number {
@@ -39,45 +45,61 @@ export class GameStateService {
     return this.state.players.find(p => p.name === playerName).score;
   }
 
-  public setScore(playerName: string, score: number): void {
+  private setScore(playerName: string, score: number): void {
     this.state.players.find(p => p.name === playerName).score = score;
   }
 
+  /**
+   * The name of the current player
+   */
   public getCurrentTurn(): string {
     return this.state.nextTurn;
   }
 
+  /**
+   * Plays a turn for the current player with the specified letter.
+   */
   public playTurn(action: DreidelLetter): void {
     if (this.state.winner) {
       return;
     }
 
+    this.saveCurrentState();
     const playerName: string = this.getCurrentTurn();
     const prevScore: number = this.getScore(playerName);
     switch (action) {
-      case 'nun':
+      case 'nun': {
         // Do nothing
+        this.turnMessages.push(`${playerName} landed on Nun. Nothing happens.`);
         break;
-      case 'gimmel':
+      }
+      case 'gimmel': {
         // Player gets all from pot
-        this.setScore(playerName, prevScore + this.getPotCount());
+        const potCount: number = this.getPotCount();
+        this.setScore(playerName, prevScore + potCount);
         this.state.potCount = 0;
+        this.turnMessages.push(`${playerName} landed on Gimmel and gets all ${potCount} points from the pot!`);
         break;
-      case 'hay':
+      }
+      case 'hay': {
         // Player gets half from pot
         const potCount: number = this.getPotCount();
         // Always round up
         const biggerHalf: number = Math.ceil(potCount / 2);
         this.setScore(playerName, prevScore + biggerHalf);
         this.state.potCount = potCount - biggerHalf;
+        this.turnMessages.push(`${playerName} landed on Hay and gets half the pot. That's ${biggerHalf} points.`);
         break;
-      case 'shin':
+      }
+      case 'shin': {
         // Player loses one point
         if (!this.didPlayerLose(playerName)) {
           this.setScore(playerName, prevScore - 1);
           this.state.potCount += 1;
+          this.turnMessages.push(`${playerName} landed on Shin and loses one point.`);
         }
         break;
+      }
     }
     if (!this.state.winner) {
       this.checkIfPotEmpty();
@@ -85,11 +107,32 @@ export class GameStateService {
     if (!this.state.winner) {
       this.nextTurn();
     }
-    this.saveState();
+
+    this.endOfAction();
+  }
+
+  /**
+   * Undo the previous turn
+   */
+  public undoLastTurn(): void {
+    const currentState: GameState = this.state;
+    this.state = { ...this.prevState };
+    this.prevState = { ...currentState };
+    this.endOfAction();
+  }
+
+  /**
+   * Resets all game data
+   */
+  public clearGame(): void {
+    this.saveCurrentState();
+    this.state = { players: [], nextTurn: null, potCount: 5 };
+    localStorage.removeItem('game-state');
   }
 
   private checkIfPotEmpty(): void {
     if (this.getPotCount() === 0) {
+      this.turnMessages.push('The pot is empty! Everyone puts in one point.');
       this.state.players.forEach(p => {
         if (!this.didPlayerLose(p.name)) {
           p.score -= 1;
@@ -120,13 +163,13 @@ export class GameStateService {
       const playerIndex: number = this.state.players.findIndex(p => p.name === playerName);
       this.state.players.splice(playerIndex, 1);
 
-      this.PlayerEliminated$.emit(playerName);
+      this.turnMessages.push(`${playerName} has no more points and is out of the game!`);
 
       // If only one player remains, they win the game
       if (this.state.players.length === 1) {
         this.state.winner = this.state.players[0].name;
         this.state.nextTurn = null;
-        this.GameOver$.emit(this.state.winner);
+        this.turnMessages.push(`${this.state.winner} is the winner!`);
       }
 
       return true;
@@ -135,19 +178,24 @@ export class GameStateService {
     return false;
   }
 
-  public clearGame(): void {
-    this.state = { players: [], nextTurn: null, potCount: 5 };
+  /**
+   * Saves the current `state` in the `prevState` variable.
+   * This should be called before any user action so it can be undone.
+   */
+  private saveCurrentState(): void {
+    this.prevState = { ...this.state };
   }
 
-  private saveState(): void {
+  /**
+   * Call at the end of a user action. Saves the current state to localStorage and emits any messages.
+   */
+  private endOfAction(): void {
+    // Save state to localstorage
     localStorage.setItem('game-state', JSON.stringify(this.state));
-  }
 
-  private restoreState(): void {
-    // Check if the state is stored
-    const storedState: string = localStorage.getItem('game-state');
-    if (storedState) {
-      this.state = JSON.parse(storedState);
+    if (this.turnMessages.length) {
+      this.Action$.emit(this.turnMessages.join('\n'));
+      this.turnMessages = [];
     }
   }
 }

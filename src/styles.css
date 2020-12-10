@@ -1,4 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: bisque;
+  padding: 20px;
+}
+
+.mat-card {
+  width: 350px;
+  margin: 20px;
+}
+
+.mat-simple-snackbar {
+  white-space: pre-wrap;
+  font-size: x-large;
+  line-height: noraml !important;
+}
+
+.mat-card-header .mat-card-title {
+  font-size: 32px;
+}
+.mat-card-header .mat-card-subtitle {
+  padding-top: 10px;
+  font-size: 24px;
+  color: red;
+}
+
+.mat-card-header .mat-card-subtitle, .mat-card-content {
+  font-size: 20px;
+}
+
+.mat-card-content, .mat-card-actions {
+  padding: 20px;
+  text-align: center;
+}
+
+.mat-card-actions .mat-button:first-child, .mat-card-actions .mat-raised-button:first-child {
+  margin-right: 10px !important;
+}
+
+.mat-card-actions .mat-raised-button {
+  font-weight: bold;
+  font-size: xx-large;
+  margin-bottom: 10px !important;
+}

@@ -1,7 +1,4 @@
-.form-card {
-  max-width: 400px;
-}
-
-form {
-  padding: 20px;
+.cardDeck {
+  display: flex;
+  flex-wrap: wrap;
 }
