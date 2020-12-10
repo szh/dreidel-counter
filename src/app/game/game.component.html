@@ -46,7 +46,11 @@
         <mat-card-subtitle>{{getScore(pName)}} Points</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <em *ngIf="currentTurn === pName">Your turn!</em>
+        <p *ngIf="currentTurn === pName">
+          <b>Your turn!</b>
+          Spin your own dreidel and click the letter that it landed on.
+          If you don't have a dreidel, click "Spin for me"for a random letter.
+        </p>
       </mat-card-content>
       <mat-card-actions>
         <p *ngIf="currentTurn === pName">
