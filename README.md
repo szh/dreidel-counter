@@ -8,5 +8,4 @@ Allows undoing of previous turn.
 
 Enjoy!
 
-© 2020 Shlomo Zalman Heigh
-MIT License
+© 2020 Shlomo Zalman Heigh, MIT License
