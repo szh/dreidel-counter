@@ -1,4 +1,7 @@
 Dreidel score counter by Shlomo Zalman Heigh
+
+Live Demo at https://dreidel-counter.herokuapp.com/
+
 Written in TypeScript with Angular. I built this in a very short period of time since I only realized I wanted it a few days before Chanukah,
 so design decisions were rushed and may not be optimal. Contributions welcome.
 
@@ -10,5 +13,5 @@ Enjoy!
 
 © 2020 Shlomo Zalman Heigh, MIT License
 
-<h2>How to use</h3>
+<h2>How to run locally</h3>
 Clone the repo, run `npm install` and `ng serve`. Browse to `localhost:4200`.
