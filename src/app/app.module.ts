@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,6 +29,7 @@ import { GameComponent } from './game/game.component';
     MatCardModule,
     MatFormFieldModule,
     MatGridListModule,
+    MatIconModule,
     MatInputModule,
     MatSnackBarModule
   ],

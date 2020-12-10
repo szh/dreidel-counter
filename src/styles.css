@@ -18,7 +18,7 @@ body {
 .mat-simple-snackbar {
   white-space: pre-wrap;
   font-size: x-large;
-  line-height: noraml !important;
+  line-height: normal !important;
 }
 
 .mat-card-header .mat-card-title {
@@ -48,4 +48,8 @@ body {
   font-size: xx-large;
   margin-bottom: 10px !important;
   line-height: 50px;
+}
+
+.mat-form-field-infix {
+  width: 250px !important;
 }

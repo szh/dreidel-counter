@@ -10,16 +10,23 @@
         <p>
           <mat-form-field class="form-field" appearance="standard">
             <mat-label>Enter a player name</mat-label>
-            <input [(ngModel)]="newPlayerName" name="name" matInput placeholder="Player name" />
+            <input autocomplete="off" [(ngModel)]="newPlayerName" name="name" matInput placeholder="Player name" />
+            <button mat-button *ngIf="newPlayerName" matSuffix mat-icon-button type="submit">
+              <mat-icon>person_add</mat-icon>
+            </button>
           </mat-form-field>
         </p>
         <p>
-          Added {{addedPlayersCount}} players.
+          Added {{playerNames?.length || 0}} players:
+          <span *ngFor="let pName of playerNames">
+            <br />
+            {{pName}}
+          </span>
         </p>
       </form>
     </mat-card-content>
     <mat-card-actions>
-      <button [disabled]="addedPlayersCount<2" mat-raised-button color="primary" type="button"
+      <button [disabled]="playerNames?.length<2" mat-raised-button color="primary" type="button"
         (click)="submitPlayers()">Done</button>
     </mat-card-actions>
   </mat-card>

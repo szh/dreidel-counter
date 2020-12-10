@@ -10,7 +10,6 @@ import { GameStateService } from '../game-state.service';
 })
 export class GameComponent implements OnInit {
   selectingPlayers: boolean;
-  addedPlayersCount: number = 0;
   newPlayerName: string;
   playerNames: string[];
   currentTurn: string;
@@ -31,13 +30,11 @@ export class GameComponent implements OnInit {
   }
 
   loadState(): void {
-    if (this.state.getPlayerNames().length === 0) {
+    this.playerNames = this.state.getPlayerNames();
+    if (this.playerNames.length < 2) {
       this.selectingPlayers = true;
-      this.playerNames = null;
-      this.addedPlayersCount = 0;
     } else {
       this.selectingPlayers = false;
-      this.playerNames = this.state.getPlayerNames();
       this.currentTurn = this.state.getCurrentTurn();
       this.potCount = this.state.getPotCount();
     }
@@ -50,7 +47,7 @@ export class GameComponent implements OnInit {
   addPlayer(): void {
     this.state.addPlayer(this.newPlayerName);
     this.newPlayerName = '';
-    this.addedPlayersCount = this.state.getPlayerNames().length;
+    this.playerNames = this.state.getPlayerNames();
   }
 
   submitPlayers(): void {

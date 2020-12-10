@@ -78,7 +78,7 @@ export class GameStateService {
         const potCount: number = this.getPotCount();
         this.setScore(playerName, prevScore + potCount);
         this.state.potCount = 0;
-        this.turnMessages.push(`${playerName} landed on Gimmel and gets all ${potCount} points from the pot!`);
+        this.turnMessages.push(`${playerName} landed on Gimmel and gets all ${potCount} point(s) from the pot!`);
         break;
       }
       case 'hay': {
@@ -88,7 +88,7 @@ export class GameStateService {
         const biggerHalf: number = Math.ceil(potCount / 2);
         this.setScore(playerName, prevScore + biggerHalf);
         this.state.potCount = potCount - biggerHalf;
-        this.turnMessages.push(`${playerName} landed on Hay and gets half the pot. That's ${biggerHalf} points.`);
+        this.turnMessages.push(`${playerName} landed on Hay and gets half the pot. That's ${biggerHalf} point(s).`);
         break;
       }
       case 'shin': {
