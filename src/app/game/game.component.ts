@@ -21,7 +21,7 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.loadState();
     this.state.Action$.subscribe((msg: string) => {
-      this.snackBar.open(msg, 'Undo')
+      this.snackBar.open(msg, 'Undo', { duration: 3000 })
         .onAction().subscribe(() => {
           this.state.undoLastTurn();
           this.loadState();
