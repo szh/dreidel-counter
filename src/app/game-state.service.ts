@@ -18,6 +18,10 @@ export class GameStateService {
     }
   }
 
+  public getWinner(): string {
+    return this.state.winner;
+  }
+
   public getPlayerNames(): string[] {
     return this.state.players.map(p => p.name);
   }

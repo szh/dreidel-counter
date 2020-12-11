@@ -32,7 +32,8 @@ export class GameComponent implements OnInit {
   loadState(): void {
     this.playerNames = this.state.getPlayerNames();
     if (this.playerNames.length < 2) {
-      this.selectingPlayers = true;
+      this.isGameOver = !!this.state.getWinner();
+      this.selectingPlayers = !this.isGameOver;
     } else {
       this.selectingPlayers = false;
       this.currentTurn = this.state.getCurrentTurn();
