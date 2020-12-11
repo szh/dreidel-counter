@@ -137,7 +137,8 @@ export class GameStateService {
   private checkIfPotEmpty(): void {
     if (this.getPotCount() === 0) {
       this.turnMessages.push('The pot is empty! Everyone puts in one point.');
-      this.state.players.forEach(p => {
+      const players: Player[] = [...this.state.players]; // Clone the array, in case a user is eliminated
+      players.forEach(p => {
         if (!this.didPlayerLose(p.name)) {
           p.score -= 1;
           this.state.potCount += 1;
